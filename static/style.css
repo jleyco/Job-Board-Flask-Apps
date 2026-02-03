@@ -521,150 +521,190 @@ body {
     }
 }
 
-/* Mobile Phones */
+/* Mobile Phones - Improved for better readability and touch */
 @media (max-width: 480px) {
     body {
-        font-size: 14px;
+        font-size: 16px; /* Increased from 14px for better readability */
     }
 
     .container {
-        padding: 0 10px;
+        padding: 0 12px;
     }
 
     .navbar {
-        padding: 0.75rem 0;
+        padding: 1rem 0;
     }
 
     .nav-brand a {
-        font-size: 1.2rem;
+        font-size: 1.4rem;
     }
 
     .nav-menu {
-        gap: 1rem;
-        font-size: 0.9rem;
+        gap: 1.5rem;
+        font-size: 1rem;
     }
 
     .main-content {
-        padding: 1rem 0;
+        padding: 1.25rem 0;
+    }
+
+    .header-section h1 {
+        font-size: 1.75rem; /* Larger for better visibility */
+    }
+
+    .job-count {
+        font-size: 1.1rem;
+    }
+
+    .filters-section {
+        padding: 1.25rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .filter-group {
+        margin-bottom: 0.5rem;
+    }
+
+    .filter-group label {
+        font-size: 1.05rem; /* Larger labels */
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+    }
+
+    .filter-group input,
+    .filter-group select {
+        padding: 1rem; /* Much larger for easier touch */
+        font-size: 1.05rem; /* Bigger text */
+        min-height: 50px; /* Touch-friendly height */
+        border: 2px solid #ddd; /* Thicker border */
+    }
+
+    .job-card {
+        padding: 1.25rem;
+        margin-bottom: 1rem;
+    }
+
+    .job-title {
+        font-size: 1.3rem; /* Larger job titles */
+        line-height: 1.4;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.8rem;
+    }
+
+    .meta-item {
+        font-size: 0.95rem; /* Larger meta text */
+    }
+
+    .job-description {
+        font-size: 1rem; /* Increased for readability */
+        line-height: 1.6;
+    }
+
+    .btn, button {
+        min-height: 52px; /* Even larger touch target */
+        padding: 0.9rem 1.2rem;
+        font-size: 1.05rem; /* Larger button text */
+        font-weight: 600;
+    }
+
+    .btn-small {
+        min-height: 48px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+    }
+
+    .job-detail {
+        padding: 1.25rem;
+    }
+
+    .job-detail-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .meta-label {
+        min-width: 90px;
+        font-size: 1rem;
+    }
+
+    .meta-value {
+        font-size: 1rem;
+    }
+
+    .job-detail-description h2 {
+        font-size: 1.35rem;
+    }
+
+    .description-content {
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+
+    .footer {
+        padding: 1.75rem 0;
+        font-size: 1rem;
+    }
+
+    .no-jobs {
+        padding: 2.5rem 1.25rem;
+    }
+
+    .no-jobs h2 {
+        font-size: 1.5rem;
+    }
+
+    .no-jobs p {
+        font-size: 1.05rem;
+    }
+
+    .info-page {
+        padding: 1.25rem;
+    }
+
+    .info-page h1 {
+        font-size: 1.65rem;
+    }
+
+    .info-section h2 {
+        font-size: 1.35rem;
+    }
+
+    .code-block {
+        padding: 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Small Mobile Phones - Ensure everything is still touch-friendly */
+@media (max-width: 375px) {
+    body {
+        font-size: 15px; /* Still readable on smaller screens */
+    }
+
+    .btn, button {
+        min-height: 50px; /* Maintain large touch target */
+        padding: 0.85rem;
+        font-size: 1rem;
+    }
+
+    .filters-section {
+        padding: 1rem;
     }
 
     .header-section h1 {
         font-size: 1.5rem;
     }
 
-    .job-count {
-        font-size: 1rem;
-    }
-
-    .filters-section {
-        padding: 0.75rem;
-        margin-bottom: 1rem;
-    }
-
-    .filter-group label {
-        font-size: 0.9rem;
+    .job-title {
+        font-size: 1.2rem;
     }
 
     .filter-group input,
     .filter-group select {
-        padding: 0.6rem;
-        font-size: 0.9rem;
-    }
-
-    .job-card {
-        padding: 1rem;
-    }
-
-    .job-title {
-        font-size: 1.1rem;
-    }
-
-    .badge {
-        font-size: 0.75rem;
-        padding: 0.2rem 0.6rem;
-    }
-
-    .meta-item {
-        font-size: 0.85rem;
-    }
-
-    .job-description {
-        font-size: 0.9rem;
-    }
-
-    .btn, button {
-        min-height: 46px;
-        padding: 0.65rem;
-        font-size: 0.95rem;
-    }
-
-    .btn-small {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.85rem;
-    }
-
-    .job-detail {
-        padding: 1rem;
-    }
-
-    .job-detail-header h1 {
-        font-size: 1.3rem;
-    }
-
-    .meta-label {
-        min-width: 80px;
-        font-size: 0.9rem;
-    }
-
-    .meta-value {
-        font-size: 0.9rem;
-    }
-
-    .job-detail-description h2 {
-        font-size: 1.2rem;
-    }
-
-    .description-content {
-        font-size: 0.9rem;
-    }
-
-    .footer {
-        padding: 1.5rem 0;
-        font-size: 0.9rem;
-    }
-
-    .no-jobs {
-        padding: 2rem 1rem;
-    }
-
-    .info-page {
-        padding: 1rem;
-    }
-
-    .info-page h1 {
-        font-size: 1.5rem;
-    }
-
-    .info-section h2 {
-        font-size: 1.2rem;
-    }
-
-    .code-block {
-        padding: 0.75rem;
-        font-size: 0.8rem;
-    }
-}
-
-/* Small Mobile Phones */
-@media (max-width: 375px) {
-    .btn, button {
-        min-height: 44px;
-        padding: 0.6rem;
-        font-size: 0.9rem;
-    }
-
-    .filters-section {
-        padding: 0.5rem;
+        font-size: 1rem;
+        padding: 0.95rem;
     }
 }
 
@@ -672,50 +712,89 @@ body {
 @media (max-width: 768px) {
     /* Larger touch targets */
     .btn, button {
-        min-height: 50px;
-        padding: 0.75rem;
-        font-size: 1rem;
+        min-height: 52px; /* Increased for better touch */
+        padding: 1rem 1.25rem;
+        font-size: 1.05rem;
         font-weight: 600;
         display: block;
         text-align: center;
         width: 100%;
         max-width: 100%;
         box-sizing: border-box;
+        border-radius: 8px; /* Slightly more rounded */
     }
 
-    a {
-        min-height: 44px;
-        display: inline-flex;
+    .btn-small {
+        min-height: 48px;
+        font-size: 1rem;
+    }
+
+    /* Links as buttons */
+    a.btn {
+        min-height: 52px;
+        display: flex;
         align-items: center;
         justify-content: center;
+        text-decoration: none;
     }
 
     /* Better spacing for touch */
     .job-card {
-        margin-bottom: 0.5rem;
+        margin-bottom: 1rem; /* Increased spacing */
+    }
+
+    .job-footer {
+        gap: 0.75rem; /* More space between buttons */
     }
 
     /* Prevent text selection on double-tap */
     .job-card,
     .btn {
-        -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+        -webkit-tap-highlight-color: rgba(52, 152, 219, 0.2);
         -webkit-touch-callout: none;
         user-select: none;
     }
 
     /* Allow text selection in descriptions */
     .job-description,
-    .description-content {
+    .description-content,
+    .job-title {
         user-select: text;
         -webkit-user-select: text;
     }
 
     /* Fix filter buttons specifically */
-    .filters-form .btn {
-        margin-top: 0.75rem;
+    .filter-group:last-child {
+        margin-top: 0.5rem;
     }
 
-    .filters-form .btn:first-of-type {
-        margin-top: 1rem;
+    .filters-form .btn {
+        margin-top: 0.5rem;
+    }
+
+    /* Better input/select styling for mobile */
+    .filter-group input,
+    .filter-group select {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        border-radius: 8px;
+    }
+
+    /* Add dropdown arrow for selects */
+    .filter-group select {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        padding-right: 2.5rem;
+    }
+
+    /* Improved job meta layout */
+    .job-meta {
+        gap: 0.75rem;
+    }
+
+    .meta-item {
+        line-height: 1.5;
     }
 }

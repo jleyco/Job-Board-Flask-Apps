@@ -58,6 +58,7 @@ update_log.txt
 # These run on your PC, not on Render
 spiders/
 run_all_spiders.py
+run_all_spiders.bat
 run_scrapers.py
 scrapy_settings.py
 auto_update_*.bat
