@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}{{ job.title or 'Job Details' }} - Job Board{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="breadcrumb">
+        <a href="/">All Jobs</a> / <span>{{ job.title or 'Job Details' }}</span>
+    </div>
+
+    <div class="job-detail">
+        <div class="job-detail-header">
+            <h1>{{ job.title or 'Untitled Job' }}</h1>
+            <span class="job-source badge-large">{{ job.source or 'Unknown Source' }}</span>
+        </div>
+
+        <div class="job-detail-meta">
+            {% if job.company %}
+            <div class="meta-row">
+                <span class="meta-label">Company:</span>
+                <span class="meta-value">{{ job.company }}</span>
+            </div>
+            {% endif %}
+
+            {% if job.location %}
+            <div class="meta-row">
+                <span class="meta-label">Location:</span>
+                <span class="meta-value">{{ job.location }}</span>
+            </div>
+            {% endif %}
+
+            {% if job.salary %}
+            <div class="meta-row">
+                <span class="meta-label">Salary:</span>
+                <span class="meta-value">{{ job.salary }}</span>
+            </div>
+            {% endif %}
+
+            {% if job.type %}
+            <div class="meta-row">
+                <span class="meta-label">Job Type:</span>
+                <span class="meta-value">{{ job.type }}</span>
+            </div>
+            {% endif %}
+
+            {% if job.category %}
+            <div class="meta-row">
+                <span class="meta-label">Category:</span>
+                <span class="meta-value">{{ job.category }}</span>
+            </div>
+            {% endif %}
+
+            {% if job.posted_date or job.date_posted %}
+            <div class="meta-row">
+                <span class="meta-label">Posted:</span>
+                <span class="meta-value">{{ job.posted_date or job.date_posted }}</span>
+            </div>
+            {% endif %}
+
+            {% if job.scraped_at %}
+            <div class="meta-row">
+                <span class="meta-label">Scraped:</span>
+                <span class="meta-value">{{ job.scraped_at }}</span>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="job-detail-description">
+            <h2>Job Description</h2>
+            <div class="description-content">
+                {% if job.job_description %}
+                    {{ job.job_description | replace('\n', '<br>') | safe }}
+                {% elif job.description %}
+                    {{ job.description | replace('\n', '<br>') | safe }}
+                {% else %}
+                    <p>No description available.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="job-detail-actions">
+            <a href="/" class="btn btn-secondary">Back to Jobs</a>
+            {% if job.url %}
+            <a href="{{ job.url }}" target="_blank" class="btn btn-primary">Apply for this Job</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

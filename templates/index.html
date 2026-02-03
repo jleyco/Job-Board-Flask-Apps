@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}Job Board - {{ filtered_count }} Jobs{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="header-section">
+        <h1>Available Jobs</h1>
+        <p class="job-count">
+            Showing <strong>{{ filtered_count }}</strong> of <strong>{{ total_jobs }}</strong> jobs
+        </p>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="filters-section">
+        <form method="get" action="/" class="filters-form">
+            <div class="filter-group">
+                <label for="search">Search:</label>
+                <input type="text" id="search" name="search"
+                       placeholder="Search job titles..."
+                       value="{{ search_query }}">
+            </div>
+
+            <div class="filter-group">
+                <label for="source">Source:</label>
+                <select id="source" name="source">
+                    <option value="">All Sources</option>
+                    {% for source in sources %}
+                    <option value="{{ source }}" {% if source == current_source %}selected{% endif %}>
+                        {{ source }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="category">Category:</label>
+                <select id="category" name="category">
+                    <option value="">All Categories</option>
+                    {% for category in categories %}
+                    <option value="{{ category }}" {% if category == current_category %}selected{% endif %}>
+                        {{ category }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <button type="submit" class="btn btn-primary">Filter</button>
+                <a href="/" class="btn btn-secondary">Clear</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Jobs List -->
+    <div class="jobs-container">
+        {% if jobs %}
+            {% for job in jobs %}
+            <div class="job-card">
+                <div class="job-header">
+                    <h2 class="job-title">
+                        <a href="{{ url_for('job_detail', job_id=job.id) }}">
+                            {{ job.title or 'Untitled Job' }}
+                        </a>
+                    </h2>
+                    <span class="job-source badge">{{ job.source or 'Unknown' }}</span>
+                </div>
+
+                <div class="job-meta">
+                    {% if job.company %}
+                    <span class="meta-item">
+                        <strong>Company:</strong> {{ job.company }}
+                    </span>
+                    {% endif %}
+
+                    {% if job.location %}
+                    <span class="meta-item">
+                        <strong>Location:</strong> {{ job.location }}
+                    </span>
+                    {% endif %}
+
+                    {% if job.salary %}
+                    <span class="meta-item">
+                        <strong>Salary:</strong> {{ job.salary }}
+                    </span>
+                    {% endif %}
+
+                    {% if job.type %}
+                    <span class="meta-item">
+                        <strong>Type:</strong> {{ job.type }}
+                    </span>
+                    {% endif %}
+
+                    {% if job.category %}
+                    <span class="meta-item">
+                        <strong>Category:</strong> {{ job.category }}
+                    </span>
+                    {% endif %}
+
+                    {% if job.posted_date or job.date_posted %}
+                    <span class="meta-item">
+                        <strong>Posted:</strong> {{ job.posted_date or job.date_posted }}
+                    </span>
+                    {% endif %}
+                </div>
+
+                <div class="job-description">
+                    {{ (job.description or job.job_description or 'No description available') | truncate_words(30) }}
+                </div>
+
+                <div class="job-footer">
+                    <a href="{{ url_for('job_detail', job_id=job.id) }}" class="btn btn-small">View Details</a>
+                    {% if job.url %}
+                    <a href="{{ job.url }}" target="_blank" class="btn btn-small btn-external">Apply</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-jobs">
+                <h2>No jobs found</h2>
+                <p>Try adjusting your filters or search terms.</p>
+                <a href="/" class="btn btn-primary">View All Jobs</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Job Board{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="/">Job Board</a>
+            </div>
+            <div class="nav-menu">
+                <a href="/">All Jobs</a>
+                <a href="/refresh">Refresh Jobs</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Job Board - Aggregating opportunities from multiple sources</p>
+            <p class="footer-small">Data scraped from: OnlineJobs.ph, RemoteOK, Freelancer, Indeed, and more</p>
+        </div>
+    </footer>
+</body>
+</html>

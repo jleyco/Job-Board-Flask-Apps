@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Refresh Jobs - Job Board{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="info-page">
+        <h1>Refresh Jobs Data</h1>
+
+        <div class="info-section">
+            <h2>How to Update Jobs</h2>
+            <p>The job listings are scraped from various websites. To refresh the data, you need to run the scraper script.</p>
+
+            <div class="code-block">
+                <h3>Option 1: Run All Scrapers (Default)</h3>
+                <pre><code>cd C:\Python\desktop_python_files\other_script\mobile
+python run_scrapers.py</code></pre>
+            </div>
+
+            <div class="code-block">
+                <h3>Option 2: Run Specific Scrapers</h3>
+                <pre><code>python run_scrapers.py --spiders onlinejobs remoteok freelancer</code></pre>
+            </div>
+
+            <div class="code-block">
+                <h3>Option 3: Run All Available Scrapers</h3>
+                <pre><code>python run_scrapers.py --all</code></pre>
+            </div>
+
+            <div class="code-block">
+                <h3>Option 4: Limit Pages to Scrape</h3>
+                <pre><code>python run_scrapers.py --pages 5</code></pre>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2>Available Scrapers</h2>
+            <ul class="scraper-list">
+                <li><strong>onlinejobs</strong> - OnlineJobs.ph (Philippines remote jobs)</li>
+                <li><strong>remoteok</strong> - RemoteOK (Remote tech jobs)</li>
+                <li><strong>weworkremotely</strong> - We Work Remotely (Remote jobs)</li>
+                <li><strong>freelancer</strong> - Freelancer.com (Freelance projects)</li>
+                <li><strong>guru</strong> - Guru.com (Freelance jobs)</li>
+                <li><strong>peopleperhour</strong> - PeoplePerHour (Freelance projects)</li>
+                <li><strong>indeed</strong> - Indeed (Various jobs)</li>
+                <li><strong>hubstaff</strong> - Hubstaff Talent (Remote jobs)</li>
+            </ul>
+        </div>
+
+        <div class="info-section">
+            <h2>After Running the Scraper</h2>
+            <p>Once the scraper completes:</p>
+            <ol>
+                <li>The jobs will be saved to <code>scraped_jobs.json</code> in the parent directory</li>
+                <li>Run <code>update_jobs.bat</code> to copy the data into the jobs_flask folder</li>
+                <li>Refresh this website to see the new jobs</li>
+                <li>No need to restart the Flask server</li>
+            </ol>
+        </div>
+
+        <div class="info-section">
+            <h2>Quick Update Command</h2>
+            <div class="code-block">
+                <h3>Windows - Double click this file:</h3>
+                <pre><code>update_jobs.bat</code></pre>
+            </div>
+            <p>Or manually copy <code>scraped_jobs.json</code> from the parent directory into the <code>jobs_flask</code> folder.</p>
+        </div>
+
+        <div class="actions">
+            <a href="/" class="btn btn-primary">Back to Jobs</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
