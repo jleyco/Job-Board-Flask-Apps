@@ -5,6 +5,7 @@ from flask import Flask, render_template, request, jsonify
 import json
 import re
 import math
+import os
 from html import unescape
 from pathlib import Path
 from datetime import datetime
@@ -16,16 +17,79 @@ JOBS_FILE = Path(__file__).parent / 'scraped_jobs.json'
 
 JOBS_PER_PAGE = 20
 
+# Work arrangement keywords
+ARRANGEMENT_KEYWORDS = {
+    'remote': ['remote', 'work from home', 'wfh', 'anywhere'],
+    'hybrid': ['hybrid'],
+    'onsite': ['onsite', 'on-site', 'on site', 'in-office', 'in office'],
+}
+
+# Job type keywords
+TYPE_KEYWORDS = {
+    'full-time': ['full-time', 'full time', 'fulltime'],
+    'part-time': ['part-time', 'part time', 'parttime'],
+    'contract': ['contract'],
+    'freelance': ['freelance', 'gig'],
+}
+
+
+def detect_arrangement(job):
+    """Detect work arrangement from job fields."""
+    text = ' '.join([
+        job.get('location') or '',
+        job.get('title') or '',
+        job.get('category') or '',
+        job.get('type') or '',
+    ]).lower()
+    for arrangement, keywords in ARRANGEMENT_KEYWORDS.items():
+        for kw in keywords:
+            if kw in text:
+                return arrangement
+    return ''
+
+
+def detect_job_type(job):
+    """Detect job type from job fields."""
+    text = ' '.join([
+        job.get('category') or '',
+        job.get('type') or '',
+        job.get('title') or '',
+    ]).lower()
+    for jtype, keywords in TYPE_KEYWORDS.items():
+        for kw in keywords:
+            if kw in text:
+                return jtype
+    return ''
+
+
+def parse_date(job):
+    """Parse posted_date into a naive datetime for sorting. Returns None if unparseable."""
+    raw = job.get('posted_date') or job.get('date_posted') or ''
+    if not raw:
+        return None
+    try:
+        dt = datetime.fromisoformat(raw)
+        # Strip timezone info for consistent comparison
+        return dt.replace(tzinfo=None)
+    except (ValueError, TypeError):
+        pass
+    try:
+        return datetime.strptime(raw, '%Y-%m-%d')
+    except (ValueError, TypeError):
+        return None
+
 
 def load_jobs():
     """Load jobs from JSON file"""
     try:
         with open(JOBS_FILE, 'r', encoding='utf-8') as f:
             jobs = json.load(f)
-            # Add index to each job for easier reference
             for idx, job in enumerate(jobs):
                 normalize_job_text(job)
                 job['id'] = idx
+                job['_arrangement'] = detect_arrangement(job)
+                job['_job_type'] = detect_job_type(job)
+                job['_parsed_date'] = parse_date(job)
             return jobs
     except FileNotFoundError:
         return []
@@ -66,7 +130,6 @@ def clean_text(value):
     text = _BR_RE.sub("\n", value)
     text = unescape(text)
     text = _TAG_RE.sub(" ", text)
-    # Normalize each line but keep line breaks
     lines = [" ".join(line.split()) for line in text.splitlines()]
     return "\n".join([line for line in lines if line])
 
@@ -78,32 +141,54 @@ def normalize_job_text(job):
             job[key] = clean_text(job.get(key))
 
 
+def apply_filters(jobs, source_filter='', category_filter='', search_query='',
+                  arrangement_filter='', job_type_filter='', sort_by=''):
+    """Apply all filters and sorting to a job list."""
+    filtered = jobs
+
+    if source_filter:
+        filtered = [j for j in filtered if j.get('source', '') == source_filter]
+
+    if category_filter:
+        filtered = [j for j in filtered
+                    if j.get('category', '') == category_filter or j.get('type', '') == category_filter]
+
+    if arrangement_filter:
+        filtered = [j for j in filtered if j.get('_arrangement') == arrangement_filter]
+
+    if job_type_filter:
+        filtered = [j for j in filtered if j.get('_job_type') == job_type_filter]
+
+    if search_query:
+        q = search_query.lower()
+        filtered = [j for j in filtered
+                    if q in (j.get('title') or '').lower()
+                    or q in (j.get('description') or '').lower()
+                    or q in (j.get('job_description') or '').lower()]
+
+    # Sorting
+    if sort_by == 'newest':
+        filtered.sort(key=lambda j: j.get('_parsed_date') or datetime.min, reverse=True)
+    elif sort_by == 'oldest':
+        filtered.sort(key=lambda j: j.get('_parsed_date') or datetime.min)
+
+    return filtered
+
+
 @app.route('/')
 def index():
     """Main page - display all jobs with filters and pagination"""
     jobs = load_jobs()
 
-    # Get filter parameters
     source_filter = request.args.get('source', '')
     category_filter = request.args.get('category', '')
     search_query = request.args.get('search', '')
+    arrangement_filter = request.args.get('arrangement', '')
+    job_type_filter = request.args.get('job_type', '')
+    sort_by = request.args.get('sort', '')
 
-    # Apply filters
-    filtered_jobs = jobs
-
-    if source_filter:
-        filtered_jobs = [job for job in filtered_jobs if job.get('source', '') == source_filter]
-
-    if category_filter:
-        filtered_jobs = [job for job in filtered_jobs
-                        if job.get('category', '') == category_filter or job.get('type', '') == category_filter]
-
-    if search_query:
-        search_lower = search_query.lower()
-        filtered_jobs = [job for job in filtered_jobs
-                        if search_lower in (job.get('title') or '').lower()
-                        or search_lower in (job.get('description') or '').lower()
-                        or search_lower in (job.get('job_description') or '').lower()]
+    filtered_jobs = apply_filters(jobs, source_filter, category_filter, search_query,
+                                  arrangement_filter, job_type_filter, sort_by)
 
     # Pagination
     total_filtered = len(filtered_jobs)
@@ -111,10 +196,8 @@ def index():
     current_page = request.args.get('page', 1, type=int)
     current_page = max(1, min(current_page, total_pages))
     start = (current_page - 1) * JOBS_PER_PAGE
-    end = start + JOBS_PER_PAGE
-    paginated_jobs = filtered_jobs[start:end]
+    paginated_jobs = filtered_jobs[start:start + JOBS_PER_PAGE]
 
-    # Get filter options
     sources = get_unique_sources(jobs)
     categories = get_unique_categories(jobs)
 
@@ -127,6 +210,9 @@ def index():
                          current_source=source_filter,
                          current_category=category_filter,
                          search_query=search_query,
+                         current_arrangement=arrangement_filter,
+                         current_job_type=job_type_filter,
+                         current_sort=sort_by,
                          current_page=current_page,
                          total_pages=total_pages)
 
@@ -135,12 +221,9 @@ def index():
 def job_detail(job_id):
     """Job detail page"""
     jobs = load_jobs()
-
     if 0 <= job_id < len(jobs):
-        job = jobs[job_id]
-        return render_template('job_detail.html', job=job)
-    else:
-        return "Job not found", 404
+        return render_template('job_detail.html', job=jobs[job_id])
+    return "Job not found", 404
 
 
 @app.route('/api/job/<int:job_id>')
@@ -157,36 +240,26 @@ def api_jobs():
     """API endpoint to get jobs as JSON"""
     jobs = load_jobs()
 
-    source_filter = request.args.get('source', '')
-    category_filter = request.args.get('category', '')
-    search_query = request.args.get('search', '')
-
-    filtered_jobs = jobs
-
-    if source_filter:
-        filtered_jobs = [job for job in filtered_jobs if job.get('source', '') == source_filter]
-
-    if category_filter:
-        filtered_jobs = [job for job in filtered_jobs
-                        if job.get('category', '') == category_filter or job.get('type', '') == category_filter]
-
-    if search_query:
-        search_query = search_query.lower()
-        filtered_jobs = [job for job in filtered_jobs
-                        if search_query in (job.get('title') or '').lower()
-                        or search_query in (job.get('description') or '').lower()]
+    filtered = apply_filters(
+        jobs,
+        source_filter=request.args.get('source', ''),
+        category_filter=request.args.get('category', ''),
+        search_query=request.args.get('search', ''),
+        arrangement_filter=request.args.get('arrangement', ''),
+        job_type_filter=request.args.get('job_type', ''),
+        sort_by=request.args.get('sort', ''),
+    )
 
     return jsonify({
         'total': len(jobs),
-        'filtered': len(filtered_jobs),
-        'jobs': filtered_jobs
+        'filtered': len(filtered),
+        'jobs': filtered
     })
 
 
 @app.route('/refresh')
 def refresh():
     """Information page about refreshing jobs"""
-    import os
     last_updated = None
     if JOBS_FILE.exists():
         mod_time = os.path.getmtime(JOBS_FILE)
