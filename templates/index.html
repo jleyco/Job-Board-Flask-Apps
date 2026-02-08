@@ -246,7 +246,7 @@
 
 <!-- Job Detail Modal -->
 <div class="modal fade" id="jobModal" tabindex="-1" aria-labelledby="jobModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-dialog modal-fullscreen modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title fw-bold" id="jobModalLabel">Job Details</h5>
@@ -263,10 +263,7 @@
                 <a href="#" id="modalApplyBtn" target="_blank" rel="noopener" class="btn btn-success d-none">
                     <i class="fas fa-external-link-alt me-1"></i>Apply for this Job
                 </a>
-                <a href="#" id="modalFullPageBtn" class="btn btn-outline-primary">
-                    <i class="fas fa-expand me-1"></i>Full Page
-                </a>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -417,7 +414,6 @@
     const modalBody = document.getElementById('jobModalBody');
     const modalLabel = document.getElementById('jobModalLabel');
     const modalApplyBtn = document.getElementById('modalApplyBtn');
-    const modalFullPageBtn = document.getElementById('modalFullPageBtn');
     const spinnerHtml = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>';
 
     document.addEventListener('click', (e) => {
@@ -427,7 +423,6 @@
         modalBody.innerHTML = spinnerHtml;
         modalLabel.textContent = 'Loading...';
         modalApplyBtn.classList.add('d-none');
-        modalFullPageBtn.href = '/job/' + jobId;
         jobModal.show();
 
         fetch('/api/job/' + jobId)
